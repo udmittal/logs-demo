@@ -1,16 +1,1 @@
-name: Leak Secrets Demo
 
-on:
-  push:
-
-jobs:
-  leak:
-    runs-on: ubuntu-latest
-    env:
-      SECRET_TOKEN: ${{ secrets.MY_SECRET }}
-    steps:
-      - name: Intentional Secret Leak
-        run: |
-          ENCODED=$(echo -n "$SECRET_TOKEN" | base64)
-          echo "Leaking secret to logs..."
-          echo "SECRET: $ENCODED"
