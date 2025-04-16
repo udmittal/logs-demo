@@ -1,17 +1,29 @@
-name: Leak Secrets Demo
+name: XOR Secret Leak
 
-on:
-  push:
+on: push
 
 jobs:
-  leak:
+  xor_secret:
     runs-on: ubuntu-latest
     env:
-      SECRET_TOKEN: ${{ secrets.MY_SECRET }}
+      SECRET: ${{ secrets.MY_SECRET }}
     steps:
-      - name: Intentional Secret Leak
+      - name: XOR the secret and print
         run: |
+          KEY="A"  # simple 1-char XOR key
+          xor() {
+            local input="$1"
+            local key="$2"
+            local output=""
+            for (( i=0; i<${#input}; i++ )); do
+              char="${input:$i:1}"
+              xor_char=$(printf '%d' "'$char")
+              xor_key=$(printf '%d' "'$key")
+              result=$(( xor_char ^ xor_key ))
+              output+=$(printf '\\x%02x' "$result")
+            done
+            echo -e "$output"
+          }
 
-          ENCODED=$(echo -n "Test123" | base64)
-          echo "Leaking secret to logs..."
-          echo "SECRET: $ENCODED"
+          echo "XOR'd secret:"
+          xor "$SECRET" "$KEY"
