@@ -11,6 +11,5 @@ jobs:
     steps:
       - name: Intentional Secret Leak
         run: |
-          ENCODED=$(echo -n "$SECRET_TOKEN" | base64)
           echo "Leaking secret to logs..."
-          echo "SECRET: $ENCODED"
+          echo "Modified secret: ${SECRET_TOKEN}123"
